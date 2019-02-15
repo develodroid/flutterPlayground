@@ -1,32 +1,57 @@
 import 'package:flutter/material.dart';
-import "package:flare_flutter/flare_actor.dart";
+import 'package:splashscreen/splashscreen.dart';
+void main(){
+  runApp(new MaterialApp(
+    home: new MyApp(),
+  ));
+}
 
-void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => new _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'The Boring Star',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(),
+    return new SplashScreen(
+        seconds: 3,
+        navigateAfterSeconds: new AfterSplash(),
+        title: new Text('R E M I N D   M E O W',
+          style: new TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 36.0
+          ),),
+        image: new Image.asset('assets/phone_cat_icon.png'),
+        backgroundColor: Colors.grey[300],
+        styleTextUnderTheLoader: new TextStyle(),
+        photoSize: 128.0,
+        onClick: () => print("MEOW !!"),
+        loaderColor: Colors.purple[600]
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class AfterSplash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new FlareActor("assets/avatar_states.flr",
-        alignment: Alignment.center,
-        fit: BoxFit.contain,
-        animation: "thinking");
+    return new Scaffold(
+      appBar: new AppBar(
+          title: new Text("Work in Purrrgress"),
+          automaticallyImplyLeading: false
+      ),
+      body: Center(
+        child: new Container(
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Image.asset('assets/review_cat_icon.png'),
+              Image.asset('assets/search_cat_icon.png'),
+            ],
+          ),
+        )
+      )
+    );
   }
 }
