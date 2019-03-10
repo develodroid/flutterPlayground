@@ -24,3 +24,4 @@ This project integrates CodeMagic in order to manage CI / CD processes.
 ## Resources
 
 Icons from : https://icon-icons.com/
+Icon made by Freepik from www.flaticon.com

@@ -1,18 +1,44 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
-void main(){
-  runApp(new MaterialApp(
-    home: new MyApp(),
-  ));
-}
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+void main() => runApp(new MaterialApp(home: new MyApp()));
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => new _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+  @override
+  void initState() {
+    super.initState();
+    var initializationSettingsAndroid =
+    new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidRecieveLocalNotification);
+    var initializationSettings = new InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return new AlertDialog(
+          title: Text("PayLoad"),
+          content: Text("Payload : $payload"),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new SplashScreen(
@@ -41,17 +67,57 @@ class AfterSplash extends StatelessWidget {
           title: new Text("Work in Purrrgress"),
           automaticallyImplyLeading: false
       ),
-      body: Center(
-        child: new Container(
-          child: new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Image.asset('assets/review_cat_icon.png'),
-              Image.asset('assets/search_cat_icon.png'),
-            ],
+      body: new Center(
+        child: new RaisedButton(
+          onPressed: _showDailyAtTime,
+          child: new Text(
+            'Demo',
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline,
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }
+Future _showDailyAtTime() async {
+  var time = new Time(10, 0, 0);
+  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      'repeatDailyAtTime channel id',
+      'repeatDailyAtTime channel name',
+      'repeatDailyAtTime description');
+  var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+  var platformChannelSpecifics = new NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.showDailyAtTime(
+      0,
+      'show daily title',
+      'Daily notification shown at approximately ${_toTwoDigitString(time.hour)}:${_toTwoDigitString(time.minute)}:${_toTwoDigitString(time.second)}',
+      time,
+      platformChannelSpecifics);
+}
+
+Future onDidRecieveLocalNotification(
+    int id, String title, String body, String payload) async {
+  // display a dialog with the notification details, tap ok to go to another page
+  showDialog(
+    context: context,
+    builder: (BuildContext context) => new CupertinoAlertDialog(
+      title: new Text(title),
+      content: new Text(body),
+      actions: [
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          child: new Text('Ok'),
+        )
+      ],
+    ),
+  );
+}
+}
+
+  String _toTwoDigitString(int value) {
+    return value.toString().padLeft(2, '0');
+  }
