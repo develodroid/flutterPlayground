@@ -10,12 +10,9 @@ abstract class SettingsViewContract {
 
 class SettingsViewPresenter {
   SettingsViewContract _view;
-  //SettingsRepository _repository;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
-  SettingsViewPresenter(this._view) {
-    //_repository = new Injector().settingsRepository;
-  }
+  SettingsViewPresenter(this._view);
 
   void initialize() {
     assert(_view != null);
@@ -33,29 +30,27 @@ class SettingsViewPresenter {
     assert(_view != null);
     var time = new Time(0, 0, 0);
     var androidPlatformChannelSpecifics =
-    new AndroidNotificationDetails('repeatDailyAtTime channel id',
-        'repeatDailyAtTime channel name', 'repeatDailyAtTime description');
+    new AndroidNotificationDetails('repeatDailyAtTime remind meow',
+        'repeatDailyAtTime remind meow', 'repeatDailyAtTime remind meow');
     var iOSPlatformChannelSpecifics =
     new IOSNotificationDetails();
     var platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    _showNotificationWithNoBadge();
-    //flutterLocalNotificationsPlugin.showDailyAtTime(
-    // 0,
-    //  'show daily title',
-    //   'Daily notification shown at approximately ${_toTwoDigitString(alarm.hour)}:${_toTwoDigitString(alarm.minutes)}:${_toTwoDigitString(time.second)}',
-    //   time,
-    //   platformChannelSpecifics);
-    // _view.onAlarmScheduledSuccess();
+
+    flutterLocalNotificationsPlugin.showDailyAtTime(
+     0, alarm.title, alarm.description, time, platformChannelSpecifics);
+     _view.onAlarmScheduledSuccess();
   }
 
-  String _toTwoDigitString(int value) {
-    return value.toString().padLeft(2, '0');
+  void testNotificationLocally() {
+    assert(_view != null);
+    _showSimpleNotification();
+    _view.onAlarmScheduledSuccess();
   }
 
-  Future _showNotificationWithNoBadge() async {
+  Future _showSimpleNotification() async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'no badge channel', 'no badge name', 'no badge description',
+        'remind meow channel', 'simple notification', 'simple description',
         channelShowBadge: false,
         importance: Importance.Max,
         priority: Priority.High,

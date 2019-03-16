@@ -11,11 +11,11 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text("Remind Meow"),
+          backgroundColor: Colors.purple[400],
         ),
         body: SettingsView()
     );
   }
-
 }
 
 class SettingsView extends StatefulWidget{
@@ -29,13 +29,10 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
   SettingsViewPresenter _presenter;
 
   final formats = {
-    InputType.both: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
-    InputType.date: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
-    InputType.time: DateFormat("HH:mm"),
+    InputType.time: DateFormat("HH:mm:ss")
   };
 
-  InputType inputType = InputType.date;
-  bool editable = true;
+  InputType inputType = InputType.time;
   DateTime date;
 
   _SettingsViewState() {
@@ -51,6 +48,14 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
   @override
   void onAlarmScheduledSuccess() {
     setState(() {});
+      showDialog(
+          context: context,
+          builder: (_) => new AlertDialog(
+            title: new Text("Alarm Scheduled"),
+            content: new Text("Boooooom"),
+            elevation: 10.0
+          )
+      );
   }
 
   @override
@@ -63,7 +68,6 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
     }
-
     await Navigator.push(
       context,
       new MaterialPageRoute(builder: (context) => new SettingsPage()),
@@ -101,30 +105,34 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-          title: new Text("Work in Purrrgress"),
-          automaticallyImplyLeading: false
-      ),
         body: Padding(
           padding: EdgeInsets.all(22.0),
           child: ListView(
             children: <Widget>[
-              Text('Format: "${formats[inputType].pattern}"'),
-
+              Image.asset('assets/review_cat_icon.png'),
               DateTimePickerFormField(
                 inputType: InputType.time,
                 format: formats[inputType],
+                editable: false,
                 decoration: InputDecoration(
-                    labelText: 'Date/Time', hasFloatingPlaceholder: false),
+                    labelText: 'Select daily reminder time', hasFloatingPlaceholder: false, ),
                 onChanged: (dt) => setState(() => date = dt),
               ),
-
-              Text('Date value: $date'),
               SizedBox(height: 16.0),
               RaisedButton(
                 onPressed: () => _presenter.scheduleAlarm(new Alarm("Remind Meow!!", "Take care of me !", date.hour, date.minute)),
                 child: new Text(
-                  'Schedule Alarm !',
+                  'Save reminder',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline,
+                ),
+              ),
+              RaisedButton(
+                onPressed: () => _presenter.testNotificationLocally(),
+                child: new Text(
+                  'Try out reminder',
                   style: Theme
                       .of(context)
                       .textTheme
@@ -134,18 +142,5 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
             ],
           ),
         ));
-  }
-
-  String _value = '';
-
-  Future _selectDate() async {
-
-  }
-
-  void updateInputType({bool date, bool time}) {
-    date = date ?? inputType != InputType.time;
-    time = time ?? inputType != InputType.date;
-    setState(() => inputType =
-    date ? time ? InputType.both : InputType.date : InputType.time);
   }
 }

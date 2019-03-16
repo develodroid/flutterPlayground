@@ -9,6 +9,7 @@ class SplashPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text("Remind Meow"),
+          backgroundColor: Colors.purple[400],
         ),
         body: SplashView()
     );
@@ -43,19 +44,19 @@ class _SplashViewState extends State<SplashView> implements SplashViewContract {
   @override
   Widget build(BuildContext context) {
     return new SplashScreen(
-        seconds: 4,
-        navigateAfterSeconds: new SettingsView(),
+        seconds: 3,
+        navigateAfterSeconds: new SettingsPage(),
         title: new Text('R E M I N D   M E O W',
           style: new TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 36.0
+              fontSize: 34.0
           ),),
         image: new Image.asset('assets/phone_cat_icon.png'),
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.grey[400],
         styleTextUnderTheLoader: new TextStyle(),
         photoSize: 128.0,
         onClick: () => print("MEOW !!"),
-        loaderColor: Colors.purple[600]
+        loaderColor: Colors.purple[400]
     );
   }
 }

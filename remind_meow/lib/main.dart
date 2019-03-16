@@ -10,7 +10,7 @@ void main() {
           home: new SplashPage(),
           theme: ThemeData.light().copyWith(
             inputDecorationTheme:
-            InputDecorationTheme(border: OutlineInputBorder())),
+            InputDecorationTheme(border: OutlineInputBorder(), fillColor: Colors.purple[400]))
       )
   );
 }
