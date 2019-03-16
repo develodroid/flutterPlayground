@@ -1,20 +1,13 @@
 import 'dart:async';
-import 'package:intl/intl.dart';
 
 class Alarm {
 
-  static final DateFormat _formatter = DateFormat('MMMM d, yyyy');
-
   final String title;
   final String description;
-  final String birthday;
+  final int    hour;
+  final int    minutes;
 
-  const Alarm({this.title, this.description, this.birthday});
-
-  Alarm.fromMap(Map<String, dynamic>  map) :
-        title = map['title'],
-        description = map['description'],
-        birthday = _formatter.format(DateTime.parse(map['dob']['date']));
+  const Alarm(this.title, this.description, this.hour, this.minutes);
 }
 
 abstract class AlarmRepository {

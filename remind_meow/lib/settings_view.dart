@@ -3,6 +3,7 @@ import 'settingsview_presenter.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
+import './data/alarm_data.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -29,9 +30,11 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
 
   final formats = {
     InputType.both: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
+    InputType.date: DateFormat("EEEE, MMMM d, yyyy 'at' h:mma"),
+    InputType.time: DateFormat("HH:mm"),
   };
 
-  InputType inputType = InputType.both;
+  InputType inputType = InputType.date;
   bool editable = true;
   DateTime date;
 
@@ -45,11 +48,9 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
     _presenter.initialize();
   }
 
-
   @override
   void onAlarmScheduledSuccess() {
     setState(() {});
-
   }
 
   @override
@@ -70,7 +71,7 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
   }
 
   @override
-  Future onDidRecieveLocalNotification(
+  Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
     showDialog(
       context: context,
@@ -78,7 +79,7 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
       new CupertinoAlertDialog(
         title: new Text(title),
         content: new Text(body),
-        /*actions: [
+        actions: [
           CupertinoDialogAction(
             isDefaultAction: true,
             child: new Text('Ok'),
@@ -87,12 +88,12 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
               await Navigator.push(
                 context,
                 new MaterialPageRoute(
-                  builder: (context) => new SecondScreen(payload),
+                  builder: (context) => new SettingsPage(),
                 ),
               );
             },
           )
-        ],*/
+        ],
       ),
     );
   }
@@ -111,7 +112,7 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
               Text('Format: "${formats[inputType].pattern}"'),
 
               DateTimePickerFormField(
-                inputType: InputType.both,
+                inputType: InputType.time,
                 format: formats[inputType],
                 decoration: InputDecoration(
                     labelText: 'Date/Time', hasFloatingPlaceholder: false),
@@ -121,7 +122,7 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
               Text('Date value: $date'),
               SizedBox(height: 16.0),
               RaisedButton(
-                onPressed: () => _presenter.scheduleAlarm,
+                onPressed: () => _presenter.scheduleAlarm(new Alarm("Remind Meow!!", "Take care of me !", date.hour, date.minute)),
                 child: new Text(
                   'Schedule Alarm !',
                   style: Theme
@@ -133,6 +134,12 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
             ],
           ),
         ));
+  }
+
+  String _value = '';
+
+  Future _selectDate() async {
+
   }
 
   void updateInputType({bool date, bool time}) {
