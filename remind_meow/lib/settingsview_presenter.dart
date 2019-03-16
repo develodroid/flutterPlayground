@@ -26,9 +26,9 @@ class SettingsViewPresenter {
         onSelectNotification: this._view.onSelectNotification);
   }
 
-  void scheduleAlarm(Alarm alarm) {
+  Future scheduleAlarm(Alarm alarm) async {
     assert(_view != null);
-    var time = new Time(0, 0, 0);
+    var time = new Time(alarm.hour, alarm.minutes, 0);
     var androidPlatformChannelSpecifics =
     new AndroidNotificationDetails('repeatDailyAtTime remind meow',
         'repeatDailyAtTime remind meow', 'repeatDailyAtTime remind meow');
@@ -37,7 +37,7 @@ class SettingsViewPresenter {
     var platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-    flutterLocalNotificationsPlugin.showDailyAtTime(
+    await flutterLocalNotificationsPlugin.showDailyAtTime(
      0, alarm.title, alarm.description, time, platformChannelSpecifics);
      _view.onAlarmScheduledSuccess();
   }

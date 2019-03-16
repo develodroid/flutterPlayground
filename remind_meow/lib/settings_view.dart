@@ -27,16 +27,17 @@ class SettingsView extends StatefulWidget{
 
 class _SettingsViewState extends State<SettingsView> implements SettingsViewContract {
   SettingsViewPresenter _presenter;
+  InputType _inputType;
+  DateTime _date;
 
   final formats = {
     InputType.time: DateFormat("HH:mm:ss")
   };
 
-  InputType inputType = InputType.time;
-  DateTime date;
-
   _SettingsViewState() {
     _presenter =  SettingsViewPresenter(this);
+    _inputType = InputType.time;
+
   }
 
   @override
@@ -53,7 +54,7 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
           builder: (_) => new AlertDialog(
             title: new Text("Alarm Scheduled"),
             content: new Text("Boooooom"),
-            elevation: 10.0
+            elevation: 10.0,
           )
       );
   }
@@ -111,16 +112,19 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
             children: <Widget>[
               Image.asset('assets/review_cat_icon.png'),
               DateTimePickerFormField(
-                inputType: InputType.time,
-                format: formats[inputType],
+                inputType: _inputType,
+                format: formats[_inputType],
                 editable: false,
                 decoration: InputDecoration(
-                    labelText: 'Select daily reminder time', hasFloatingPlaceholder: false, ),
-                onChanged: (dt) => setState(() => date = dt),
+                    labelText: 'Select daily reminder time', hasFloatingPlaceholder: false),
+                onChanged: (dt) => setState(() => _date = dt),
               ),
               SizedBox(height: 16.0),
-              RaisedButton(
-                onPressed: () => _presenter.scheduleAlarm(new Alarm("Remind Meow!!", "Take care of me !", date.hour, date.minute)),
+              new RaisedButton(
+                onPressed: () =>  _presenter.scheduleAlarm(new Alarm("Remind Meow!!", "Take care of me !", _date.hour, _date.minute)),
+                textColor: Colors.white,
+                color: Colors.grey[400],
+                padding: const EdgeInsets.all(8.0),
                 child: new Text(
                   'Save reminder',
                   style: Theme
@@ -129,10 +133,13 @@ class _SettingsViewState extends State<SettingsView> implements SettingsViewCont
                       .headline,
                 ),
               ),
-              RaisedButton(
+              new RaisedButton(
                 onPressed: () => _presenter.testNotificationLocally(),
+                textColor: Colors.black,
+                color: Colors.grey[400],
+                padding: const EdgeInsets.all(8.0),
                 child: new Text(
-                  'Try out reminder',
+                  'Try Out Reminder',
                   style: Theme
                       .of(context)
                       .textTheme
